@@ -54,5 +54,16 @@ variable "private_subnet_cidrs" {
 variable "public_app_gateway_cidr" {
   description = "CIDR blocks for application gateway"
   type        = string
-  default     = "10.10.9.0/24"
+  default     = "10.10.9.0/26"
+}
+
+variable "public_bastion_cidr" {
+  description = "CIDR blocks for bastion host"
+  type        = string
+  default     = "10.10.9.64/26"
+}
+
+variable "public_ips" {
+  type    = set(string)
+  default = ["natgateway", "bastion"]
 }

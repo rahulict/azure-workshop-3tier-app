@@ -65,5 +65,5 @@ variable "public_bastion_cidr" {
 
 variable "public_ips" {
   type    = set(string)
-  default = ["natgateway", "bastion"]
+  default = ["natgateway", "bastion", "appgateway"]
 }

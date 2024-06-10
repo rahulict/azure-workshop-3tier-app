@@ -41,6 +41,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss001" {
       name      = "internal"
       primary   = true
       subnet_id = azurerm_subnet.private_subnet["10-10-10-0-24"].id
+      application_gateway_backend_address_pool_ids = [one(azurerm_application_gateway.application_gateway.backend_address_pool[*].id)]
     }
   }
 }

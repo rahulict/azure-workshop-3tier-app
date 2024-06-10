@@ -35,9 +35,17 @@ resource "azurerm_subnet" "app_gateway_subnet" {
   address_prefixes     = [var.public_app_gateway_cidr]
 }
 
+resource "azurerm_subnet" "bashtion_subnet" {
+  name                 = "AzureBastionSubnet"
+  resource_group_name  = azurerm_resource_group.resource_group["networking"].name
+  virtual_network_name = azurerm_virtual_network.vnet.name
+  address_prefixes     = [var.public_bastion_cidr]
+}
+
 ## Creating NAT Gateway ##
-resource "azurerm_public_ip" "nat_public_ip" {
-  name                = "natgateway-ip-${var.project_name}-${var.env}-${var.region}-001"
+resource "azurerm_public_ip" "public_ip" {
+  for_each            = var.public_ips
+  name                = "${each.value}-ip-${var.project_name}-${var.env}-${var.region}-001"
   location            = var.region
   resource_group_name = azurerm_resource_group.resource_group["networking"].name
   allocation_method   = "Static"
@@ -53,11 +61,24 @@ resource "azurerm_nat_gateway" "nat_gateway" {
 
 resource "azurerm_nat_gateway_public_ip_association" "nat_gateway_ip_association" {
   nat_gateway_id       = azurerm_nat_gateway.nat_gateway.id
-  public_ip_address_id = azurerm_public_ip.nat_public_ip.id
+  public_ip_address_id = azurerm_public_ip.public_ip["natgateway"].id
 }
 
 resource "azurerm_subnet_nat_gateway_association" "private_subnet_nat_gateway_association" {
   for_each       = { for cidr in var.private_subnet_cidrs : replace(replace(cidr, ".", "-"), "/", "-") => cidr }
   subnet_id      = azurerm_subnet.private_subnet[each.key].id
   nat_gateway_id = azurerm_nat_gateway.nat_gateway.id
+}
+
+## Bastion host ##
+resource "azurerm_bastion_host" "bastion_host" {
+  name                = "bastion-${var.project_name}-${var.env}-${var.region}-001"
+  location            = var.region
+  resource_group_name = azurerm_resource_group.resource_group["networking"].name
+
+  ip_configuration {
+    name                 = "configuration"
+    subnet_id            = azurerm_subnet.bashtion_subnet.id
+    public_ip_address_id = azurerm_public_ip.public_ip["bastion"].id
+  }
 }

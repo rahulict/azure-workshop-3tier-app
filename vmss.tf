@@ -14,7 +14,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss001" {
   sku                 = "Standard_B1s"
   instances           = 2
   admin_username      = "azureuser"
-  user_data = filebase64("./userdata.sh")
+  user_data           = filebase64("./userdata.sh")
 
   admin_ssh_key {
     username   = "azureuser"
@@ -38,9 +38,9 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss001" {
     primary = true
 
     ip_configuration {
-      name      = "internal"
-      primary   = true
-      subnet_id = azurerm_subnet.private_subnet["10-10-10-0-24"].id
+      name                                         = "internal"
+      primary                                      = true
+      subnet_id                                    = azurerm_subnet.private_subnet["10-10-10-0-24"].id
       application_gateway_backend_address_pool_ids = [one(azurerm_application_gateway.application_gateway.backend_address_pool[*].id)]
     }
   }

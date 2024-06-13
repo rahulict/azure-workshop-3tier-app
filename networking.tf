@@ -97,7 +97,7 @@ resource "azurerm_network_security_rule" "appgtw_nsg_rule" {
   access                      = "Allow"
   protocol                    = "Tcp"
   source_port_range           = "*"
-  destination_port_ranges      = ["80", "443", "65200-65535"]
+  destination_port_ranges     = ["80", "443", "65200-65535"]
   source_address_prefix       = "*"
   destination_address_prefix  = "*"
   resource_group_name         = azurerm_resource_group.resource_group["networking"].name
@@ -109,28 +109,28 @@ resource "azurerm_subnet_network_security_group_association" "nsg_association_1"
   network_security_group_id = azurerm_network_security_group.appgtw_nsg.id
 }
 
-## VMSS NSG & Its rules ##
-resource "azurerm_network_security_group" "appgtw_nsg" {
-  name                = "nsg-appgtw-${var.project_name}-${var.env}-${var.region}-001"
-  location            = var.region
-  resource_group_name = azurerm_resource_group.resource_group["networking"].name
-}
+# ## VMSS NSG & Its rules ##
+# resource "azurerm_network_security_group" "appgtw_nsg" {
+#   name                = "nsg-appgtw-${var.project_name}-${var.env}-${var.region}-001"
+#   location            = var.region
+#   resource_group_name = azurerm_resource_group.resource_group["networking"].name
+# }
 
-resource "azurerm_network_security_rule" "appgtw_nsg_rule" {
-  name                        = "appgtw_nsg_rule"
-  priority                    = 100
-  direction                   = "Inbound"
-  access                      = "Allow"
-  protocol                    = "Tcp"
-  source_port_range           = "*"
-  destination_port_ranges      = ["80", "443", "65200-65535"]
-  source_address_prefix       = "*"
-  destination_address_prefix  = "*"
-  resource_group_name         = azurerm_resource_group.resource_group["networking"].name
-  network_security_group_name = azurerm_network_security_group.appgtw_nsg.name
-}
+# resource "azurerm_network_security_rule" "appgtw_nsg_rule" {
+#   name                        = "appgtw_nsg_rule"
+#   priority                    = 100
+#   direction                   = "Inbound"
+#   access                      = "Allow"
+#   protocol                    = "Tcp"
+#   source_port_range           = "*"
+#   destination_port_ranges      = ["80", "443", "65200-65535"]
+#   source_address_prefix       = "*"
+#   destination_address_prefix  = "*"
+#   resource_group_name         = azurerm_resource_group.resource_group["networking"].name
+#   network_security_group_name = azurerm_network_security_group.appgtw_nsg.name
+# }
 
-resource "azurerm_subnet_network_security_group_association" "nsg_association_1" {
-  subnet_id                 = azurerm_subnet.app_gateway_subnet.id
-  network_security_group_id = azurerm_network_security_group.appgtw_nsg.id
-}
+# resource "azurerm_subnet_network_security_group_association" "nsg_association_1" {
+#   subnet_id                 = azurerm_subnet.app_gateway_subnet.id
+#   network_security_group_id = azurerm_network_security_group.appgtw_nsg.id
+# }

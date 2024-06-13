@@ -16,6 +16,10 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss001" {
   admin_username      = "azureuser"
   user_data           = filebase64("./userdata.sh")
 
+  identity {
+    type = "SystemAssigned"
+  }
+
   admin_ssh_key {
     username   = "azureuser"
     public_key = azurerm_ssh_public_key.common_key.public_key
@@ -44,4 +48,11 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss001" {
       application_gateway_backend_address_pool_ids = [one(azurerm_application_gateway.application_gateway.backend_address_pool[*].id)]
     }
   }
+}
+
+## Role assignment ##
+resource "azurerm_role_assignment" "role_to_vmss" {
+  scope                = azurerm_resource_group.resource_group["storage"].id
+  role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_linux_virtual_machine_scale_set.vmss001.identity[0].principal_id
 }

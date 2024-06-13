@@ -67,3 +67,8 @@ variable "public_ips" {
   type    = set(string)
   default = ["natgateway", "bastion", "appgateway"]
 }
+
+variable "create_storage_account" {
+  type    = bool
+  default = false
+}

@@ -72,3 +72,8 @@ variable "create_storage_account" {
   type    = bool
   default = false
 }
+
+variable "create_keyvault" {
+  type    = bool
+  default = false
+}

@@ -51,8 +51,20 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss001" {
 }
 
 ## Role assignment ##
-resource "azurerm_role_assignment" "role_to_vmss" {
+# resource "azurerm_role_assignment" "blob_role_to_vmss" {
+#   scope                = azurerm_resource_group.resource_group["storage"].id
+#   role_definition_name = "Owner"
+#   principal_id         = azurerm_linux_virtual_machine_scale_set.vmss001.identity[0].principal_id
+# }
+
+resource "azurerm_role_assignment" "blob_role_to_vmss" {
   scope                = azurerm_resource_group.resource_group["storage"].id
   role_definition_name = "Storage Blob Data Contributor"
+  principal_id         = azurerm_linux_virtual_machine_scale_set.vmss001.identity[0].principal_id
+}
+
+resource "azurerm_role_assignment" "table_role_to_vmss" {
+  scope                = azurerm_resource_group.resource_group["storage"].id
+  role_definition_name = "Storage Table Data Contributor"
   principal_id         = azurerm_linux_virtual_machine_scale_set.vmss001.identity[0].principal_id
 }

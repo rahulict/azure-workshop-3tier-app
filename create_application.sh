@@ -4,7 +4,7 @@
 export TF_VAR_project_name="3tierdemo"
 export TF_VAR_env="test"
 export TF_VAR_region="eastus"
-export TF_VAR_subscription_id="03f869b7-7505-4b61-9287-f320c883399f"
+export TF_VAR_subscription_id="ea5b3bb6-91fc-4e81-8696-b70f4898491f"
 export TF_VAR_allowed_location_policy_id="/providers/Microsoft.Authorization/policyDefinitions/e56962a6-4747-49cd-b67b-bf8b01975c4c"
 export TF_VAR_resource_groups='["networking", "webserver", "application", "database", "storage", "vault"]'
 export TF_VAR_vnet_cidr="10.10.0.0/16"
@@ -15,6 +15,7 @@ export TF_VAR_public_bastion_cidr="10.10.9.64/26"
 export TF_VAR_public_ips='["natgateway", "bastion", "appgateway"]'
 export TF_VAR_create_storage_account=true
 export TF_VAR_create_keyvault=true
+export TF_VAR_create_app_gateway=true
 
 #terraform init
-terraform apply
+# terraform destroy

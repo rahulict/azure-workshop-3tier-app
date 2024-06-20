@@ -77,3 +77,8 @@ variable "create_keyvault" {
   type    = bool
   default = false
 }
+
+variable "create_app_gateway"  {
+  type = bool
+  default = false
+}

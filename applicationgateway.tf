@@ -1,14 +1,15 @@
 locals {
-  backend_address_pool_name      = "${azurerm_virtual_network.vnet.name}-beap"
+  backend_address_pool_name      = "${azurerm_virtual_network.vnet.name}-beapool"
   frontend_port_name             = "${azurerm_virtual_network.vnet.name}-feport"
   frontend_ip_configuration_name = "${azurerm_virtual_network.vnet.name}-feip"
-  http_setting_name              = "${azurerm_virtual_network.vnet.name}-be-htst"
+  http_setting_name              = "${azurerm_virtual_network.vnet.name}-be-httpsetting"
   listener_name                  = "${azurerm_virtual_network.vnet.name}-httplstn"
-  request_routing_rule_name      = "${azurerm_virtual_network.vnet.name}-rqrt"
+  request_routing_rule_name      = "${azurerm_virtual_network.vnet.name}-rqrtrule"
   redirect_configuration_name    = "${azurerm_virtual_network.vnet.name}-rdrcfg"
 }
 
 resource "azurerm_application_gateway" "application_gateway" {
+  count = var.create_app_gateway ? 1 : 0
   name                = "appgtw-${var.project_name}-${var.env}-${var.region}-001"
   resource_group_name = azurerm_resource_group.resource_group["webserver"].name
   location            = var.region

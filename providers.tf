@@ -6,8 +6,8 @@ terraform {
     }
   }
   backend "azurerm" {
-    resource_group_name  = "rg-for-terraform-resources"
-    storage_account_name = "stforterraformstatefiles"
+    resource_group_name  = "studentResourceGroup"
+    storage_account_name = "stforterraformstatefile"
     container_name       = "tfstatefile"
     key                  = "terraform.tfstate"
   }

@@ -1,12 +1,12 @@
-resource "azurerm_ssh_public_key" "common_key" {
-  name                = "common_key"
-  resource_group_name = azurerm_resource_group.resource_group["application"].name
-  location            = var.region
-  public_key          = file("~/.ssh/id_rsa.pub")
-}
+# resource "azurerm_ssh_public_key" "common_key" {
+#   name                = "common_key"
+#   resource_group_name = azurerm_resource_group.resource_group["application"].name
+#   location            = var.region
+#   public_key          = file("~/.ssh/id_rsa.pub")
+# }
 
 resource "azurerm_linux_virtual_machine_scale_set" "vmss001" {
-  name                = "vmss-${var.project_name}-${var.env}-${var.region}-001"
+  name                = "vmss-${var.project_name}-${var.env}-${var.region}-host"
   resource_group_name = azurerm_resource_group.resource_group["application"].name
   location            = var.region
   zone_balance        = true
@@ -14,7 +14,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss001" {
   sku                 = "Standard_B1s"
   instances           = 2
   admin_username      = "azureuser"
-  user_data           = filebase64("./userdata.sh")
+  user_data           = filebase64("./userdata_host.sh")
 
   identity {
     type = "SystemAssigned"
@@ -45,7 +45,7 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss001" {
       name                                         = "internal"
       primary                                      = true
       subnet_id                                    = azurerm_subnet.private_subnet["10-10-10-0-24"].id
-      application_gateway_backend_address_pool_ids = [one(azurerm_application_gateway.application_gateway.backend_address_pool[*].id)]
+      # application_gateway_backend_address_pool_ids = var.create_app_gateway ? [one(azurerm_application_gateway.application_gateway.backend_address_pool[*].id)] : ""
     }
   }
 }
@@ -57,13 +57,13 @@ resource "azurerm_linux_virtual_machine_scale_set" "vmss001" {
 #   principal_id         = azurerm_linux_virtual_machine_scale_set.vmss001.identity[0].principal_id
 # }
 
-resource "azurerm_role_assignment" "blob_role_to_vmss" {
+resource "azurerm_role_assignment" "blob_role_to_vmss_001" {
   scope                = azurerm_resource_group.resource_group["storage"].id
   role_definition_name = "Storage Blob Data Contributor"
   principal_id         = azurerm_linux_virtual_machine_scale_set.vmss001.identity[0].principal_id
 }
 
-resource "azurerm_role_assignment" "table_role_to_vmss" {
+resource "azurerm_role_assignment" "table_role_to_vmss_001" {
   scope                = azurerm_resource_group.resource_group["storage"].id
   role_definition_name = "Storage Table Data Contributor"
   principal_id         = azurerm_linux_virtual_machine_scale_set.vmss001.identity[0].principal_id
